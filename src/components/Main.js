@@ -3,39 +3,47 @@ import React, {Component} from 'react';
 import nba from '../nba-client';
 import Profile from './Profile';
 import DataViewContainer from './DataViewContainer';
+import SearchBar from './SearchBar';
+import { DEFAULT_PLAYER_INFO } from '../constants';
 
 class Main extends Component {
-    constructor() {
-        console.log(1);
-        super();
-        this.state = {
-            key: {},
-            playerId: 201939,
-            a: 1        
-        }
+    state = {
+        playerInfo: DEFAULT_PLAYER_INFO
     }
-
+ 
     componentDidMount() {
         console.log(7);
         window.nba = nba;
-        nba.stats.playerInfo({ PlayerID: nba.findPlayer('Stephen Curry').playerId})
-            .then((info) => {
-                console.log(info);
-                const mydata = Object.assign(info.commonPlayerInfo[0], info.playerHeadlineStats[0]);
-                console.log(mydata);
-                this.setState({ key: mydata });
-            })
+        this.loadPlayerInfo(DEFAULT_PLAYER_INFO.fullName);
     }
 
+    loadPlayerInfo = (playerName) => {
+        nba.stats.playerInfo({ PlayerID: nba.findPlayer(playerName).playerId}).then((info) => {
+            console.log(info);
+            const playInfo = Object.assign(info.commonPlayerInfo[0], info.playerHeadlineStats[0]);
+            console.log(playInfo);
+            this.setState({ playerInfo: playInfo });
+        })
+    } 
+
+    handleSelectPlayer = (playerName) => {
+        this.loadPlayerInfo(playerName);
+    }
+    
     render() {
         console.log(2);
         return (
             <div className="main">
-                <Profile one={this.state.key} />
-                <DataViewContainer playerId={this.state.playerId} data={this.state.a} />
+                <SearchBar handleSelectPlayer={this.handleSelectPlayer} />
+                <div className="player">
+                    <Profile one={this.state.playerInfo} />
+                    <DataViewContainer playerId={this.state.playerInfo.playerId} />
+                </div>
             </div>
         );
     }
+
+
 }
 
 export default Main;
