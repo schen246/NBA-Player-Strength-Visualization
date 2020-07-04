@@ -29,7 +29,7 @@ class SearchBar extends Component {
        const { dataSource } = this.state;
        const aaa = dataSource.map((player) => (
            <AAA key={player.playerId} value={player.fullName} className="player-option">
-               <img className="player-option-image" src={`${PROFILE_PIC_URL_PREFIX}/${player.playerId}.png`}/>
+               <img className="player-option-image" src={`${PROFILE_PIC_URL_PREFIX}/${player.playerId}.png`} alt={player.fullName}/>
                <span className="player-option-label">{player.fullName}</span>
            </AAA>
        ));
